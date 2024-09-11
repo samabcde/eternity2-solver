@@ -2,6 +2,9 @@ package com.samabcde.state;
 
 import com.samabcde.Dimension;
 import com.samabcde.Piece;
+import com.samabcde.Rotation;
+
+import java.util.Arrays;
 
 public class PossiblePlacementFactory {
     private final Dimension dimension;
@@ -19,7 +22,7 @@ public class PossiblePlacementFactory {
     }
 
     private PiecePossiblePlacement createCorner(Piece piece) {
-//        dimension.cornerPositions().map()
+//        dimension.cornerPositions().map(p-> Arrays.stream(Rotation.values()).filter())
         return null;
     }
 }

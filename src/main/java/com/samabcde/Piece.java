@@ -9,22 +9,22 @@ public record Piece(int id, Color top, Color right, Color bottom, Color left) {
         this.left = left;
     }
 
-    public PositionType getPieceType() {
+    public PieceType getPieceType() {
         if ((this.top.isBorder() && this.right.isBorder())
                 || (this.right.isBorder() && this.bottom.isBorder())
                 || (this.bottom.isBorder() && this.left.isBorder())
                 || (this.left.isBorder() && this.top.isBorder())
         ) {
-            return PositionType.CORNER;
+            return PieceType.CORNER;
         }
         if (this.top.isBorder()
                 || this.right.isBorder()
                 || this.bottom.isBorder()
                 || this.left.isBorder()
         ) {
-            return PositionType.SIDE;
+            return PieceType.SIDE;
         }
-        return PositionType.INTERIOR;
+        return PieceType.INTERIOR;
     }
 
     public String toHumanReadable() {

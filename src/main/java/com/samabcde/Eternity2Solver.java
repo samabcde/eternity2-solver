@@ -44,7 +44,7 @@ public class Eternity2Solver {
     }
 
     private void validateCorner() {
-        long cornerCount = pieces.stream().filter(piece -> piece.getPieceType() == PositionType.CORNER).count();
+        long cornerCount = pieces.stream().filter(piece -> piece.getPieceType() == PieceType.CORNER).count();
         int expectedCornerCount = 4;
         if (cornerCount != expectedCornerCount) {
             throw new IllegalArgumentException("no. of corner pieces: " + cornerCount + " should be " + expectedCornerCount);
@@ -52,7 +52,7 @@ public class Eternity2Solver {
     }
 
     private void validateSide() {
-        long sideCount = pieces.stream().filter(piece -> piece.getPieceType() == PositionType.SIDE).count();
+        long sideCount = pieces.stream().filter(piece -> piece.getPieceType() == PieceType.SIDE).count();
         int expectedSideCount = 2 * (this.grid.getDimension().width() - 2) + 2 * (this.grid.getDimension().height() - 2);
         if (sideCount != expectedSideCount) {
             throw new IllegalArgumentException("no. of side pieces: " + sideCount + " should be " + expectedSideCount);
@@ -60,7 +60,7 @@ public class Eternity2Solver {
     }
 
     private void validateInterior() {
-        long interiorCount = pieces.stream().filter(piece -> piece.getPieceType() == PositionType.INTERIOR).count();
+        long interiorCount = pieces.stream().filter(piece -> piece.getPieceType() == PieceType.INTERIOR).count();
         int expectedInteriorCount = (this.grid.getDimension().width() - 2) * (this.grid.getDimension().height() - 2);
         if (interiorCount != expectedInteriorCount) {
             throw new IllegalArgumentException("no. of interior pieces: " + interiorCount + " should be " + expectedInteriorCount);

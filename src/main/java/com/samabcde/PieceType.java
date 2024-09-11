@@ -1,6 +1,6 @@
 package com.samabcde;
 
-public enum PositionType {
+public enum PieceType {
     CORNER,
     SIDE,
     INTERIOR
