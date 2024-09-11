@@ -30,16 +30,16 @@ public class Eternity2Solver {
 
     private void validateGrid() {
         if (grid.getDimension().width() < 2) {
-            throw new IllegalArgumentException(STR."grid width: \{grid.getDimension().width()} should be greater than or equals to 2");
+            throw new IllegalArgumentException("grid width: " + grid.getDimension().width() + " should be greater than or equals to 2");
         }
         if (grid.getDimension().height() < 2) {
-            throw new IllegalArgumentException(STR."grid height: \{grid.getDimension().height()} should be greater than or equals to 2");
+            throw new IllegalArgumentException("grid height: " + grid.getDimension().height() + " should be greater than or equals to 2");
         }
     }
 
     private void validateCount() {
         if (pieces.size() != grid.getSize()) {
-            throw new IllegalArgumentException(STR."no. of pieces: \{pieces.size()} should match grid size: \{grid.getSize()}");
+            throw new IllegalArgumentException("no. of pieces: " + pieces.size() + " should match grid size: " + grid.getSize());
         }
     }
 
@@ -47,7 +47,7 @@ public class Eternity2Solver {
         long cornerCount = pieces.stream().filter(piece -> piece.getPieceType() == PositionType.CORNER).count();
         int expectedCornerCount = 4;
         if (cornerCount != expectedCornerCount) {
-            throw new IllegalArgumentException(STR."no. of corner pieces: \{cornerCount} should be \{expectedCornerCount}");
+            throw new IllegalArgumentException("no. of corner pieces: " + cornerCount + " should be " + expectedCornerCount);
         }
     }
 
@@ -55,15 +55,15 @@ public class Eternity2Solver {
         long sideCount = pieces.stream().filter(piece -> piece.getPieceType() == PositionType.SIDE).count();
         int expectedSideCount = 2 * (this.grid.getDimension().width() - 2) + 2 * (this.grid.getDimension().height() - 2);
         if (sideCount != expectedSideCount) {
-            throw new IllegalArgumentException(STR."no. of side pieces: \{sideCount} should be \{expectedSideCount}");
+            throw new IllegalArgumentException("no. of side pieces: " + sideCount + " should be " + expectedSideCount);
         }
     }
 
     private void validateInterior() {
         long interiorCount = pieces.stream().filter(piece -> piece.getPieceType() == PositionType.INTERIOR).count();
-        int expectedInteriorCount = (this.grid.getDimension().width() - 1) * (this.grid.getDimension().height() - 1);
+        int expectedInteriorCount = (this.grid.getDimension().width() - 2) * (this.grid.getDimension().height() - 2);
         if (interiorCount != expectedInteriorCount) {
-            throw new IllegalArgumentException(STR."no. of interior pieces: \{expectedInteriorCount} should be 4");
+            throw new IllegalArgumentException("no. of interior pieces: " + interiorCount + " should be " + expectedInteriorCount);
         }
     }
 }

@@ -17,7 +17,13 @@ public class Solution {
         char[][] placedGrid = new char[dimension.height() * 3][dimension.width() * 3];
         for (int i = 0; i < placedGrid.length; i++) {
             for (int j = 0; j < placedGrid[0].length; j++) {
-                placedGrid[i][j] = ' ';
+                if (i % 3 == 1 && j % 3 == 1) {
+                    placedGrid[i][j] = '╳';
+                } else if (i % 3 == 0) {
+                    placedGrid[i][j] = j % 3 == 0 ? '╲' : '╱';
+                } else if (i % 3 == 2) {
+                    placedGrid[i][j] = j % 3 == 2 ? '╲' : '╱';
+                }
             }
         }
         // assume upper left corner is 0,0
@@ -39,7 +45,6 @@ public class Solution {
             builder.append(row);
             builder.append(System.lineSeparator());
         }
-        builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
     }
 }

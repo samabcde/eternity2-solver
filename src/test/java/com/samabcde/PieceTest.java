@@ -8,9 +8,11 @@ class PieceTest {
     public void toHumanReadableTest() {
         Piece piece = new Piece(0, new Color('a'), new Color('b'), new Color('c'), new Color('d'));
         assertEquals("""
-                 a
-                d b
-                 c
-                """, piece.toHumanReadable());
+                
+                ╲a╱
+                d╳b
+                ╱c╲
+                
+                """, "\n"+piece.toHumanReadable()+"\n");
     }
 }

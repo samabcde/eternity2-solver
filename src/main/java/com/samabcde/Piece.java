@@ -28,12 +28,11 @@ public record Piece(int id, Color top, Color right, Color bottom, Color left) {
     }
 
     public String toHumanReadable() {
-        return STR
-                ."""
-                 \{top}
-                \{left} \{right}
-                 \{bottom}
-                """;
+        return """
+                ╲%s╱
+                %s╳%s
+                ╱%s╲
+                """.formatted(top, left, right, bottom);
     }
 
     public Color top(Rotation rotation) {
