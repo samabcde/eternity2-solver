@@ -21,29 +21,14 @@ public record Dimension(int width, int height) {
     }
 
     public Stream<Position> cornerPositions() {
-        PositionFactory positionFactory = new PositionFactory(this);
-        return Stream.of(
-                positionFactory.createPosition(0, 0),
-                positionFactory.createPosition(width - 1, 0),
-                positionFactory.createPosition(0, height - 1),
-                positionFactory.createPosition(width - 1, height - 1)
-        );
+        return allPositions().filter(p->p.positionType().isCorner);
     }
 
     public Stream<Position> sidePositions() {
-        PositionFactory positionFactory = new PositionFactory(this);
-        return Stream.concat(
-                IntStream.range(0, width)
-                        .mapToObj(w -> IntStream.of(0, height - 1).mapToObj(h -> positionFactory.createPosition(w, h)))
-                        .flatMap(x -> x),
-                IntStream.of(0, width - 1)
-                        .mapToObj(w -> IntStream.range(0, height).mapToObj(h -> positionFactory.createPosition(w, h)))
-                        .flatMap(x -> x)
-        );
+        return allPositions().filter(p->p.positionType().isSide);
     }
 
     public Stream<Position> interiorPositions() {
-        PositionFactory positionFactory = new PositionFactory(this);
-        return null;
+        return allPositions().filter(p->p.positionType().isInterior);
     }
 }

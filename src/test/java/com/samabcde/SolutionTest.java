@@ -12,7 +12,7 @@ class SolutionTest {
         List<Piece> pieces = setup.pieces;
         Solution solution = new Solution(setup.dimension.allPositions()
                 .map(p -> new Placement(pieces.get(p.y() * 16 + p.x()), p, Rotation._0)).toList(),
-                new Grid(setup.dimension));
+                new Grid(setup.dimension), 0);
         System.out.println(solution.toHumanReadable());
     }
 }

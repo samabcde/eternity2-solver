@@ -3,11 +3,11 @@ package com.samabcde;
 import static com.samabcde.Eternity2Setup.BORDER_COLOR_CODE;
 
 public record Color(char code) {
-    boolean isBorder() {
+    public boolean isBorder() {
         return code == BORDER_COLOR_CODE;
     }
 
-    boolean isInterior() {
+    public boolean isInterior() {
         return !isBorder();
     }
 

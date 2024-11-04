@@ -5,10 +5,14 @@ import java.util.List;
 public class Solution {
     private final List<Placement> placements;
     private final Grid grid;
+    private final boolean isSolved;
+    private final long iterateCount;
 
-    public Solution(List<Placement> placements, Grid grid) {
+    public Solution(List<Placement> placements, Grid grid, long iterateCount) {
         this.placements = placements;
         this.grid = grid;
+        this.isSolved = placements.size() == grid.getSize();
+        this.iterateCount = iterateCount;
     }
 //    public add()
 
@@ -20,9 +24,11 @@ public class Solution {
                 if (i % 3 == 1 && j % 3 == 1) {
                     placedGrid[i][j] = '╳';
                 } else if (i % 3 == 0) {
-                    placedGrid[i][j] = j % 3 == 0 ? '╲' : '╱';
+                    placedGrid[i][j] = (j % 3 == 0 ? '╲' : j % 3 == 2 ? '╱' : ' ');
                 } else if (i % 3 == 2) {
-                    placedGrid[i][j] = j % 3 == 2 ? '╲' : '╱';
+                    placedGrid[i][j] = (j % 3 == 2 ? '╲' : j % 3 == 0 ? '╱' : ' ');
+                } else {
+                    placedGrid[i][j] = ' ';
                 }
             }
         }
@@ -46,5 +52,13 @@ public class Solution {
             builder.append(System.lineSeparator());
         }
         return builder.toString();
+    }
+
+    public boolean isSolved() {
+        return isSolved;
+    }
+
+    public long getIterateCount() {
+        return iterateCount;
     }
 }

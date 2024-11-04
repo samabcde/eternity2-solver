@@ -1,69 +1,56 @@
 package com.samabcde;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.samabcde.state.PossiblePlacementFactory;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Eternity2Solver {
-    private final Grid grid;
+    private final Deque<Placement> solutions = new LinkedList<>();
+    private final Eternity2Puzzle puzzle;
     private final List<Piece> pieces;
-    private final List<Placement> givenPlacements;
-    private final List<Placement> solutions = new LinkedList<>();
-//    private final boolean[][] filterPlacement;
 
     public Eternity2Solver(Grid grid, List<Piece> pieces, List<Placement> givenPlacements) {
-        this.grid = grid;
+        PossiblePlacementFactory factory = new PossiblePlacementFactory(grid.getDimension());
         this.pieces = pieces;
-        this.givenPlacements = givenPlacements;
+        this.puzzle = new Eternity2Puzzle(grid, pieces, givenPlacements);
     }
 
     public Solution solve() {
-        validateGrid();
-        validateCount();
-        validateCorner();
-        validateSide();
-        validateInterior();
         // initialize state
         // addGivenPlacements
         // solve
-        return null;
-    }
+        puzzle.validate();
+        long iterateCount = 0;
+        while (true) {
+//            Piece piece = pieces.get(solutions.size());
 
-    private void validateGrid() {
-        if (grid.getDimension().width() < 2) {
-            throw new IllegalArgumentException("grid width: " + grid.getDimension().width() + " should be greater than or equals to 2");
-        }
-        if (grid.getDimension().height() < 2) {
-            throw new IllegalArgumentException("grid height: " + grid.getDimension().height() + " should be greater than or equals to 2");
-        }
-    }
-
-    private void validateCount() {
-        if (pieces.size() != grid.getSize()) {
-            throw new IllegalArgumentException("no. of pieces: " + pieces.size() + " should match grid size: " + grid.getSize());
-        }
-    }
-
-    private void validateCorner() {
-        long cornerCount = pieces.stream().filter(piece -> piece.getPieceType() == PieceType.CORNER).count();
-        int expectedCornerCount = 4;
-        if (cornerCount != expectedCornerCount) {
-            throw new IllegalArgumentException("no. of corner pieces: " + cornerCount + " should be " + expectedCornerCount);
-        }
-    }
-
-    private void validateSide() {
-        long sideCount = pieces.stream().filter(piece -> piece.getPieceType() == PieceType.SIDE).count();
-        int expectedSideCount = 2 * (this.grid.getDimension().width() - 2) + 2 * (this.grid.getDimension().height() - 2);
-        if (sideCount != expectedSideCount) {
-            throw new IllegalArgumentException("no. of side pieces: " + sideCount + " should be " + expectedSideCount);
+            Piece piece = puzzle.getCurrent().next(pieces.stream().filter(p -> !solutions.stream().map(Placement::piece).collect(Collectors.toSet()).contains(p)).toList());
+            Optional<Placement> next = puzzle.getCurrent().nextPossible(piece);
+            if (puzzle.getCurrent().isSolvable() && next.isPresent()) {
+                puzzle.addPlacement(next.get());
+                solutions.push(next.get());
+                System.out.println("add next:" + next.get());
+                if (isSolved()) {
+                    return new Solution(new ArrayList<>(solutions), puzzle.getGrid(), iterateCount);
+                }
+            } else {
+                if (solutions.isEmpty()) {
+                    return new Solution(new ArrayList<>(solutions), puzzle.getGrid(), iterateCount);
+                } else {
+                    var last = solutions.poll();
+                    System.out.println("remove last:" + last);
+                    puzzle.removePlacement(piece);
+                }
+            }
+            iterateCount++;
+            if (iterateCount % 10000 == 0) {
+                System.out.println("iterate count:" + iterateCount + " solution size:" + solutions.size());
+            }
         }
     }
 
-    private void validateInterior() {
-        long interiorCount = pieces.stream().filter(piece -> piece.getPieceType() == PieceType.INTERIOR).count();
-        int expectedInteriorCount = (this.grid.getDimension().width() - 2) * (this.grid.getDimension().height() - 2);
-        if (interiorCount != expectedInteriorCount) {
-            throw new IllegalArgumentException("no. of interior pieces: " + interiorCount + " should be " + expectedInteriorCount);
-        }
+    public boolean isSolved() {
+        return solutions.size() == pieces.size();
     }
 }
