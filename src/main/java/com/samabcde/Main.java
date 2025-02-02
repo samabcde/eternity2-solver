@@ -1,11 +1,15 @@
 package com.samabcde;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         String pieces = """
@@ -271,6 +275,6 @@ public class Main {
                 .flatMapToInt(String::chars)
                 .mapToObj(value -> (char) value)
                 .collect(Collectors.groupingBy(character -> character, HashMap::new, Collectors.counting()));
-        colorCount.forEach((character, c) -> System.out.println(character + " colorCount:" + c));
+        colorCount.forEach((character, c) -> logger.info(character + " colorCount:" + c));
     }
 }

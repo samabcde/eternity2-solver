@@ -3,6 +3,7 @@ package com.samabcde;
 import com.samabcde.state.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Eternity2Puzzle {
     public Grid getGrid() {
@@ -118,8 +119,9 @@ public class Eternity2Puzzle {
         // add not possible
         // push new state
         var removed = piecePlacementIntersections.stream().filter(p -> p.piece().equals(placement.piece()))
-                .flatMap(p -> p.placementIntersections().stream()).filter(p -> p.placement().equals(placement))
-                .flatMap(p -> p.intersections().stream()).toList();
+                .flatMap(p -> p.placementIntersections().stream())
+                .filter(p -> p.placement().equals(placement))
+                .flatMap(p -> p.intersections().stream()).collect(Collectors.toSet());
         PuzzleState afterRemove = this.current.tryPlacement(placement, removed);
         states.push(this.current);
         this.current = afterRemove;

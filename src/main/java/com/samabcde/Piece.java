@@ -1,5 +1,7 @@
 package com.samabcde;
 
+import java.util.Objects;
+
 public record Piece(int id, Color top, Color right, Color bottom, Color left) {
     public Piece(int id, Color top, Color right, Color bottom, Color left) {
         this.id = id;
@@ -69,5 +71,17 @@ public record Piece(int id, Color top, Color right, Color bottom, Color left) {
             case _180 -> right();
             case _270 -> bottom();
         };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return id == piece.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

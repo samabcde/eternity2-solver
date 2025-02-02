@@ -65,51 +65,28 @@ public record PuzzleState(List<PiecePossiblePlacement> piecePossiblePlacements,
         );
     }
 
-    public PuzzleState tryPlacement(Placement placement, List<Placement> intersect) {
-        List<PiecePossiblePlacement> piecePossiblePlacements1 = this.piecePossiblePlacements.stream().map(piecePossiblePlacement ->
-                new PiecePossiblePlacement(
-                        piecePossiblePlacement.piece(),
-                        piecePossiblePlacement.possiblePlacements().stream().filter(p -> !intersect.contains(p)
-                        ).toList()
-                )
-        ).toList();
-        List<PositionPossiblePlacement> positionPossiblePlacements1 = this.positionPossiblePlacements.stream().map(positionPossiblePlacement ->
-                new PositionPossiblePlacement(
-                        positionPossiblePlacement.position(),
-                        positionPossiblePlacement.possiblePlacements().stream().filter(p ->
-                                !(intersect.contains(p)
-                                        || (!p.position().equals(placement.position()) && p.piece() == placement.piece())
-                                )
-                        ).toList())
-        ).toList();
+    public PuzzleState tryPlacement(Placement placement, Set<Placement> intersect) {
+        List<PiecePossiblePlacement> piecePossiblePlacements1 = this.piecePossiblePlacements.stream()
+                .filter(piecePossiblePlacement -> piecePossiblePlacement.piece() != placement.piece())
+                .map(piecePossiblePlacement ->
+                        piecePossiblePlacement.excludeIntersect(intersect)
+                ).toList();
+        List<PositionPossiblePlacement> positionPossiblePlacements1 = this.positionPossiblePlacements.stream()
+                .filter(positionPossiblePlacement -> !positionPossiblePlacement.position().equals(placement.position()))
+                .map(positionPossiblePlacement ->
+                        positionPossiblePlacement.excludeIntersect(placement, intersect)
+                ).toList();
         var onePiecePositions = positionPossiblePlacements1.stream().filter(positionPossiblePlacement ->
                 positionPossiblePlacement.possiblePlacements().stream().map(Placement::piece).distinct().count() == 1
         ).toList();
         if (!onePiecePositions.isEmpty()) {
             var pieces = onePiecePositions.stream().flatMap(o -> o.possiblePlacements().stream().map(Placement::piece)).collect(Collectors.toSet());
             positionPossiblePlacements1 = positionPossiblePlacements1.stream().map(positionPossiblePlacement ->
-                    {
-                        if (onePiecePositions.contains(positionPossiblePlacement)) {
-                            return positionPossiblePlacement;
-                        }
-                        return new PositionPossiblePlacement(
-                                positionPossiblePlacement.position(),
-                                positionPossiblePlacement.possiblePlacements().stream().filter(p -> !pieces.contains(p.piece())).toList());
-                    }
+                    positionPossiblePlacement.excludeOnePiecePositions(onePiecePositions, pieces)
             ).toList();
-            piecePossiblePlacements1 = piecePossiblePlacements1.stream().map(piecePossiblePlacement -> {
-                if (pieces.contains(piecePossiblePlacement.piece())) {
-                    var position = onePiecePositions.stream().filter(
-                            o -> o.possiblePlacements().stream().allMatch(p -> p.piece() == piecePossiblePlacement.piece())
-                    ).findFirst().orElseThrow().position();
-                    return new PiecePossiblePlacement(piecePossiblePlacement.piece(),
-                            piecePossiblePlacement.possiblePlacements().stream().filter(
-                                    p -> p.position() != position
-                            ).toList());
-                } else {
-                    return piecePossiblePlacement;
-                }
-            }).toList();
+            piecePossiblePlacements1 = piecePossiblePlacements1.stream().map(piecePossiblePlacement ->
+                    piecePossiblePlacement.excludeOnePiecePositions(onePiecePositions, pieces)
+            ).toList();
         }
         return new PuzzleState(
                 piecePossiblePlacements1,

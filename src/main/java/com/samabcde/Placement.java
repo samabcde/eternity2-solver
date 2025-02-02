@@ -1,5 +1,7 @@
 package com.samabcde;
 
+import java.util.Objects;
+
 public record Placement(Piece piece, Position position, Rotation rotation) {
 
     public String toHumanReadableString() {
@@ -41,5 +43,19 @@ public record Placement(Piece piece, Position position, Rotation rotation) {
 
     Color bottom() {
         return piece.bottom(rotation);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Placement placement = (Placement) o;
+        return piece.id() == placement.piece.id()
+                && position.id() == placement.position.id()
+                && rotation == placement.rotation;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(piece.id(), position.id(), rotation);
     }
 }
